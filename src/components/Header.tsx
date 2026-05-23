@@ -1,9 +1,9 @@
-import { Leaf, Award, Compass, Sparkles } from 'lucide-react';
+import { Leaf, Award, Compass, Sparkles, Settings } from 'lucide-react';
 import React from 'react';
 
 interface HeaderProps {
-  currentTab: 'students' | 'institute';
-  onTabChange: (tab: 'students' | 'institute') => void;
+  currentTab: 'students' | 'institute' | 'admin';
+  onTabChange: (tab: 'students' | 'institute' | 'admin') => void;
 }
 
 export default function Header({ currentTab, onTabChange }: HeaderProps) {
@@ -34,7 +34,7 @@ export default function Header({ currentTab, onTabChange }: HeaderProps) {
         </div>
 
         {/* Primary Navigation Toggle */}
-        <div className="bg-stone-100/80 border border-emerald-950/5 p-1 rounded-xl flex gap-1 shadow-inner max-w-sm w-full sm:w-auto">
+        <div className="bg-stone-100/80 border border-emerald-950/5 p-1 rounded-xl flex flex-wrap gap-1 shadow-inner w-full sm:w-auto">
           <button
             onClick={() => onTabChange('students')}
             id="tab-students-toggle"
@@ -58,6 +58,18 @@ export default function Header({ currentTab, onTabChange }: HeaderProps) {
           >
             <Compass size={16} />
             Yashil institut
+          </button>
+          <button
+            onClick={() => onTabChange('admin')}
+            id="tab-admin-toggle"
+            className={`flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-300 select-none cursor-pointer ${
+              currentTab === 'admin'
+                ? 'bg-stone-900 text-emerald-450 shadow-md shadow-black/10 scale-102 font-bold'
+                : 'text-stone-600 hover:text-stone-900 hover:bg-white/50'
+            }`}
+          >
+            <Settings size={15} />
+            Admin Panel
           </button>
         </div>
       </div>

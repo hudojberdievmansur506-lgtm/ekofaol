@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import {
   CheckCircle,
@@ -6,9 +7,39 @@ import {
   Zap
 } from 'lucide-react';
 import { GREEN_INSTITUTE_PROJECTS, INSTITUT_ECO_STATS, ECO_TIPS } from '../data';
+import { GreenProject } from '../types';
 import AutoCarousel from './AutoCarousel';
 
 export default function GreenInstitute() {
+  const [projects, setProjects] = useState<GreenProject[]>([]);
+  const [tips, setTips] = useState<{ title: string; description: string }[]>([]);
+
+  useEffect(() => {
+    // Load projects
+    const savedProjs = localStorage.getItem('guldpi_green_projects_custom');
+    if (savedProjs) {
+      try {
+        setProjects(JSON.parse(savedProjs));
+      } catch (e) {
+        setProjects(GREEN_INSTITUTE_PROJECTS);
+      }
+    } else {
+      setProjects(GREEN_INSTITUTE_PROJECTS);
+    }
+
+    // Load tips
+    const savedTips = localStorage.getItem('guldpi_eco_tips_custom');
+    if (savedTips) {
+      try {
+        setTips(JSON.parse(savedTips));
+      } catch (e) {
+        setTips(ECO_TIPS);
+      }
+    } else {
+      setTips(ECO_TIPS);
+    }
+  }, []);
+
   return (
     <div className="space-y-12">
       {/* Green Institute Banner */}
@@ -68,7 +99,7 @@ export default function GreenInstitute() {
 
         {/* Projects Pillars List. For each, images cycle automatically! */}
         <div className="grid grid-cols-1 gap-8">
-          {GREEN_INSTITUTE_PROJECTS.map((proj) => (
+          {projects.map((proj) => (
             <div
               key={proj.id}
               className="bg-white rounded-3xl overflow-hidden border border-emerald-950/10 shadow-lg hover:shadow-xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12"
@@ -91,6 +122,7 @@ export default function GreenInstitute() {
                       {proj.category === 'energy' && 'MUQOBIL ENERGETIKA'}
                       {proj.category === 'flora' && 'YASHIL OʻSIMLIKZORLAR'}
                       {proj.category === 'water' && 'SUV VA RESURSLAR'}
+                      {proj.category === 'waste' && 'CHIQINDILAR TIZIMI'}
                     </span>
                   </div>
 
@@ -108,7 +140,7 @@ export default function GreenInstitute() {
                       Loyihaning asosiy yutuqlari:
                     </h4>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-stone-600">
-                      {proj.highlights.map((item, idx) => (
+                      {proj.highlights && proj.highlights.map((item, idx) => (
                         <li key={idx} className="flex items-start gap-1.5">
                           <CheckCircle size={14} className="text-emerald-505 shrink-0 mt-0.5" />
                           <span>{item}</span>
@@ -140,7 +172,7 @@ export default function GreenInstitute() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {ECO_TIPS.map((tip, idx) => (
+          {tips.map((tip, idx) => (
             <div key={idx} className="bg-white p-5 rounded-2xl border border-stone-150 relative overflow-hidden group hover:border-emerald-500/20 shadow-xs">
               <span className="absolute right-3 top-3 font-mono text-3xl font-extrabold text-emerald-100 select-none group-hover:text-emerald-200/50 transition duration-300">
                 0{idx + 1}

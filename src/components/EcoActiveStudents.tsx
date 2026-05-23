@@ -19,11 +19,11 @@ export default function EcoActiveStudents() {
 
   // Load merged activities
   useEffect(() => {
-    const saved = localStorage.getItem('guldpi_eco_activities');
+    const saved = localStorage.getItem('guldpi_eco_activities_custom');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setActivities([...parsed, ...INITIAL_ECO_ACTIVITIES]);
+        setActivities(parsed);
       } catch (e) {
         setActivities(INITIAL_ECO_ACTIVITIES);
       }

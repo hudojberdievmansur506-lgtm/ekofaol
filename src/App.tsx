@@ -4,10 +4,11 @@ import Header from './components/Header';
 import EcoActiveStudents from './components/EcoActiveStudents';
 import GreenInstitute from './components/GreenInstitute';
 import CarbonCalculator from './components/CarbonCalculator';
-import { Leaf, ExternalLink } from 'lucide-react';
+import AdminPanel from './components/AdminPanel';
+import { Leaf } from 'lucide-react';
 
 export default function App() {
-  const [currentTab, setCurrentTab] = useState<'students' | 'institute'>('students');
+  const [currentTab, setCurrentTab] = useState<'students' | 'institute' | 'admin'>('students');
 
   return (
     <div className="min-h-screen bg-stone-50/50 flex flex-col font-sans selection:bg-emerald-150 selection:text-emerald-900">
@@ -30,7 +31,7 @@ export default function App() {
               >
                 <EcoActiveStudents />
               </motion.div>
-            ) : (
+            ) : currentTab === 'institute' ? (
               <motion.div
                 key="institute-view"
                 initial={{ opacity: 0, y: 15 }}
@@ -40,22 +41,34 @@ export default function App() {
               >
                 <GreenInstitute />
               </motion.div>
+            ) : (
+              <motion.div
+                key="admin-view"
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -15 }}
+                transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <AdminPanel />
+              </motion.div>
             )}
           </AnimatePresence>
         </div>
 
         {/* Global Action Widget: Student Footprint Calculator */}
-        <div className="pt-8 border-t border-stone-200">
-          <div className="max-w-xl mb-8 space-y-1">
-            <h2 className="text-xl md:text-2xl font-bold text-teal-950 font-display">
-              Ekologik Barkamollik va Amaliy Hisoblar
-            </h2>
-            <p className="text-stone-500 text-xs md:text-sm">
-              Sizning kichik tashabbuslaringiz qanchalik muhimligini amaliy tarzda tekshirib koʻring
-            </p>
+        {currentTab !== 'admin' && (
+          <div className="pt-8 border-t border-stone-200">
+            <div className="max-w-xl mb-8 space-y-1">
+              <h2 className="text-xl md:text-2xl font-bold text-teal-950 font-display">
+                Ekologik Barkamollik va Amaliy Hisoblar
+              </h2>
+              <p className="text-stone-500 text-xs md:text-sm">
+                Sizning kichik tashabbuslaringiz qanchalik muhimligini amaliy tarzda tekshirib koʻring
+              </p>
+            </div>
+            <CarbonCalculator />
           </div>
-          <CarbonCalculator />
-        </div>
+        )}
       </main>
 
       {/* Institutional Green Footer */}
