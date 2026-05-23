@@ -12,13 +12,22 @@ import {
   Check, 
   Bookmark, 
   RefreshCw, 
-  HelpCircle
+  HelpCircle,
+  Lock,
+  Unlock
 } from 'lucide-react';
 import { EcoActivity, GreenProject, ImageSlide } from '../types';
 import { INITIAL_ECO_ACTIVITIES, GREEN_INSTITUTE_PROJECTS, ECO_TIPS } from '../data';
 
 export default function AdminPanel() {
   const [activeSubTab, setActiveSubTab] = useState<'activities' | 'projects' | 'tips'>('activities');
+
+  // Authentication State
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem('guldpi_admin_authenticated') === 'true';
+  });
+  const [password, setPassword] = useState('');
+  const [authError, setAuthError] = useState('');
 
   // Activities State
   const [activities, setActivities] = useState<EcoActivity[]>([]);
@@ -412,6 +421,77 @@ export default function AdminPanel() {
     }
   };
 
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password.trim() === 'admin777') {
+      setIsAuthenticated(true);
+      localStorage.setItem('guldpi_admin_authenticated', 'true');
+      setAuthError('');
+      setPassword('');
+      triggerMessage("Muvaffaqiyatli kirdingiz!", 'success');
+    } else {
+      setAuthError("Noto'g'ri parol kiritildi! Qaytadan urinib ko'ring.");
+    }
+  };
+
+  const handleLogout = () => {
+    setIsAuthenticated(false);
+    localStorage.removeItem('guldpi_admin_authenticated');
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="max-w-md mx-auto my-12 p-8 bg-white rounded-3xl border border-stone-200 shadow-xl space-y-6">
+        <div className="text-center space-y-2">
+          <div className="w-14 h-14 bg-emerald-50 rounded-full flex items-center justify-center mx-auto text-emerald-600 border border-emerald-100">
+            <Lock size={24} className="stroke-[2.5]" />
+          </div>
+          <h3 className="text-lg font-black text-teal-950 tracking-tight">Xavfsiz Kirish</h3>
+          <p className="text-xs text-stone-500 max-w-xs mx-auto">
+            Boshqaruv paneliga kirish uchun himoya parolini kiriting
+          </p>
+        </div>
+
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-[10px] font-bold text-stone-600 uppercase mb-1">
+              Admin paroli
+            </label>
+            <input
+              type="password"
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => {
+                setPassword(e.target.value);
+                setAuthError('');
+              }}
+              className="w-full bg-stone-50 border border-stone-200 px-4 py-3 rounded-xl text-center text-sm font-mono tracking-wider focus:outline-none focus:border-emerald-600 focus:ring-2 focus:ring-emerald-500/10 transition"
+              autoFocus
+              required
+            />
+          </div>
+
+          {authError && (
+            <p className="text-xs font-semibold text-red-600 text-center bg-red-50 py-2 px-3 rounded-lg border border-red-100">
+              {authError}
+            </p>
+          )}
+
+          <button
+            type="submit"
+            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-3.5 rounded-xl uppercase tracking-wider shadow-lg shadow-emerald-600/10 hover:shadow-emerald-600/20 active:scale-[0.98] transition duration-200 cursor-pointer"
+          >
+            Tasdiqlash
+          </button>
+        </form>
+
+        <p className="text-[10px] text-center text-stone-400 font-mono">
+          Guliston Davlat Pedagogika Instituti EkoPortal • 2026
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Compact Title Area */}
@@ -424,6 +504,13 @@ export default function AdminPanel() {
             Tizim boshqaruv paneli (ADMIN) — Eko-tashabbuslar va loyihalar tahriri
           </p>
         </div>
+        <button
+          onClick={handleLogout}
+          className="self-start sm:self-center flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-stone-100 hover:bg-stone-200 border border-stone-200 text-stone-700 text-[11px] font-bold tracking-wide transition-all cursor-pointer"
+        >
+          <Lock size={12} />
+          Tizimdan chiqish
+        </button>
       </div>
 
       {/* Floating Alerts */}
